@@ -46,5 +46,11 @@ void setup() {
                   Adafruit_BME280::SAMPLING_X1, // humidity
                   Adafruit_BME280::FILTER_OFF);
   
+
+  int16_t i;
+  for (i = 0; i < graphLength; i++) {
+    tempGraph[i] = 0;
+  }
+
   Serial.print(F("Start... "));
 }

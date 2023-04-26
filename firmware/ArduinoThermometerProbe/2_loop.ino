@@ -22,6 +22,14 @@ void loop() {
 
   if (minuteTimer.isReady()) {
     minuteTemp = currentTemp;
+
+    for (int i = 63; i >= 0; i--) {
+      if (i == 0) {
+        tempGraph[i] = currentTemp;
+      } else {
+        tempGraph[i] = tempGraph[i - 1];
+      }
+    }
   }
 
   if (withDisplay) {
@@ -37,17 +45,17 @@ void loop() {
     display.setTextColor(SSD1306_WHITE);
     // Start at top-left corner
     display.setCursor(20, 0);
-    
+
     // display.write("T:");
     display.print(currentTemp);
 
     display.setTextSize(1);
     if ((currentTemp == previousTemp && up) || currentTemp > previousTemp) {
       up = true;
-      display.write(0x18); // ↑
+      display.write(0x18);  // ↑
     } else {
       up = false;
-      display.write(0x19); // ↓
+      display.write(0x19);  // ↓
     }
     // display.println(currentTemp);
 
@@ -68,24 +76,28 @@ void loop() {
     // display.println(" mm");
 
 
-    display.setTextSize(1);
-    display.setCursor(58, 16);
-    display.println(" 1  5 10 60");
-    display.setCursor(58, 24);
-    display.print(previousTemp);
-    display.write(" ");
-    display.print(fiveSecTemp);
-    display.write(" ");
-    display.print(tenSecTemp);
-    display.write(" ");
-    display.print(minuteTemp);
+    // display.setTextSize(1);
+    // display.setCursor(58, 16);
+    // display.println(" 1  5 10 60");
+    // display.setCursor(58, 24);
+    // display.print(previousTemp);
+    // display.write(" ");
+    // display.print(fiveSecTemp);
+    // display.write(" ");
+    // display.print(tenSecTemp);
+    // display.write(" ");
+    // display.print(minuteTemp);
 
-    display.setCursor(120, 0);
+    display.setTextSize(1);
+    display.setCursor(122, 0);
     if (progressIconFilled) {
       // display.write(0x09);
     } else {
-      display.write(0x07);
+      display.fillCircle(120, 1, 1, SSD1306_WHITE);
+      // display.write(0x07);
     }
+
+    drawTempChart();
 
     display.display();
   }

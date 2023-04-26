@@ -36,23 +36,6 @@ Adafruit_BME280 bme;
 // (пин, R термистора, B термистора, базовая температура, R резистора)
 thermistor therm(SENS_PIN, T_RESIST, B_COEF, 25, R_RESIST);
 
-#include "timerMinim.h"
-timerMinim sensorTimer(1000);
-timerMinim fiveSecTimer(5000);
-timerMinim tenSecTimer(10000);
-timerMinim minuteTimer(60000);
-
-boolean up = true;
-int currentTemp = 0;
-int previousTemp = currentTemp;
-int fiveSecTemp = currentTemp;
-int tenSecTemp = currentTemp;
-int minuteTemp = currentTemp;
-
-
-// BME280
-float dispTemp;
-// byte dispHum;
-// int dispPres;
-
-boolean progressIconFilled = false;
+// Chart settings
+// #define TEMP_MIN 15
+// #define TEMP_MAX 35
