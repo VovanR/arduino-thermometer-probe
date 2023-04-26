@@ -1,21 +1,25 @@
-int16_t chartX = 64;
-int16_t chartY = 32;
-
 void drawTempChart() {
   int16_t i;
   int16_t val;
 
   for (i = 0; i < graphLength; i++) {
-    val = map(tempGraph[i], -10, 100, 0, 32);
-    // Right-to-left
-    display.drawPixel(128 - i, 32 - val, SSD1306_WHITE);
-    // Left-to-right
-    // display.drawPixel(64 + i, 32 - val, SSD1306_WHITE);
+    val = map(constrain(tempGraph[i], TEMP_MIN, TEMP_MAX), TEMP_MIN, TEMP_MAX, 0, 22);
+    display.drawPixel((128 - 1) - i, (22 - 1) - val, DEFAULT_COLOR);
   }
 
-  display.drawPixel(64, 0, SSD1306_WHITE);
-  display.drawPixel(64, 32 - 1, SSD1306_WHITE);
+  // Chart border
+  display.drawPixel(44, 0, DEFAULT_COLOR);
+  display.drawPixel(44, 22 - 1, DEFAULT_COLOR);
+  display.drawPixel(128 - 1, 0, DEFAULT_COLOR);
+  display.drawPixel(128 - 1, 22 - 1, DEFAULT_COLOR);
+}
 
-  display.drawPixel(128 - 1, 0, SSD1306_WHITE);
-  display.drawPixel(128 - 1, 32 - 1, SSD1306_WHITE);
+void addTempToStack(int value) {
+  for (int i = graphLength - 1; i >= 0; i--) {
+    if (i == 0) {
+      tempGraph[i] = value;
+    } else {
+      tempGraph[i] = tempGraph[i - 1];
+    }
+  }
 }

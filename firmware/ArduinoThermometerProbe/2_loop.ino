@@ -1,15 +1,17 @@
 void loop() {
-  if (sensorTimer.isReady()) {
+  if (oneSecTimer.isReady()) {
     previousTemp = currentTemp;
     currentTemp = therm.getTempAverage();
 
     // BME280
     bme.takeForcedMeasurement();
     dispTemp = bme.readTemperature();
-    // dispHum = bme.readHumidity();
-    // dispPres = (float)bme.readPressure() * 0.00750062;
+    dispHum = bme.readHumidity();
+    dispPres = (float)bme.readPressure() * 0.00750062;
 
     progressIconFilled = !progressIconFilled;
+
+    addTempToStack(currentTemp);
   }
 
   if (fiveSecTimer.isReady()) {
@@ -22,58 +24,73 @@ void loop() {
 
   if (minuteTimer.isReady()) {
     minuteTemp = currentTemp;
-
-    for (int i = 63; i >= 0; i--) {
-      if (i == 0) {
-        tempGraph[i] = currentTemp;
-      } else {
-        tempGraph[i] = tempGraph[i - 1];
-      }
-    }
   }
 
   if (withDisplay) {
     display.clearDisplay();
-    // Normal 1:1 pixel scale
-    display.setTextSize(1);
-    display.setCursor(0, 7);
-    display.print("NTC");
 
+    // Draw white text
+    display.setTextColor(DEFAULT_COLOR);
+
+    // Sign
+    display.setTextSize(1);
+    // Start at top-left corner
+    display.setCursor(0, 7);
+    if (currentTemp >= 0) {
+      display.print("+");
+    }
 
     display.setTextSize(2);
-    // Draw white text
-    display.setTextColor(SSD1306_WHITE);
-    // Start at top-left corner
-    display.setCursor(20, 0);
-
-    // display.write("T:");
+    display.setCursor(6, 0);
     display.print(currentTemp);
 
+    // Arrow
     display.setTextSize(1);
+    // if (currentTemp > 99 || currentTemp < -99) {
+    //   display.setCursor(39, 0);
+    // } else {
+    //   display.setCursor(31, 0);
+    // }
     if ((currentTemp == previousTemp && up) || currentTemp > previousTemp) {
       up = true;
-      display.write(0x18);  // ↑
+      display.write(0x18); // ↑
     } else {
       up = false;
-      display.write(0x19);  // ↓
+      display.write(0x19); // ↓
     }
-    // display.println(currentTemp);
 
     // BME280
-    display.setCursor(0, 23);
-    display.print("\BME");
-    display.setTextSize(2);
-    display.setCursor(20, 16);
+    display.setTextSize(1);
+    if (abs(dispTemp) > 99) {
+      display.setCursor(37, 25);
+    } else {
+      display.setCursor(43, 25);
+    }
+    if (dispTemp >= 0) {
+      display.print("+");
+    }
     display.print(dispTemp, 0);
+    display.print("C");
 
-    // display.setTextSize(1);
-    // display.print("H:");
-    // display.print(bme.readHumidity(), 0);
-    // display.println(" %");
+    if (dispHum >= 100) {
+      display.setCursor(70, 25);
+    } else if (dispHum >= 10) {
+      display.setCursor(76, 25);
+    } else {
+      display.setCursor(82, 25);
+    }
+    display.print(dispHum);
+    display.print("%");
 
-    // display.print("P:");
-    // display.print(bme.readPressure() * 0.00750062, 0);
-    // display.println(" mm");
+    if (dispPres >= 100) {
+      display.setCursor(98, 25);
+    } else if (dispPres >= 10) {
+      display.setCursor(104, 25);
+    } else {
+      display.setCursor(110, 25);
+    }
+    display.print(dispPres);
+    display.print("mm");
 
 
     // display.setTextSize(1);
@@ -88,13 +105,8 @@ void loop() {
     // display.write(" ");
     // display.print(minuteTemp);
 
-    display.setTextSize(1);
-    display.setCursor(122, 0);
     if (progressIconFilled) {
-      // display.write(0x09);
-    } else {
-      display.fillCircle(120, 1, 1, SSD1306_WHITE);
-      // display.write(0x07);
+      display.fillCircle(120, 1, 1, DEFAULT_COLOR);
     }
 
     drawTempChart();

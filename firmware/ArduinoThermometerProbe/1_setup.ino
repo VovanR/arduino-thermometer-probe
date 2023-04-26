@@ -1,5 +1,5 @@
 void setup() {
-  Serial.begin(9600);
+  // Serial.begin(9600);
 
   // Screen
   // Serial.print(F("Screen SSD1306... "));
@@ -12,19 +12,29 @@ void setup() {
     withDisplay = false;
   }
 
-  // Screen
-  if (withDisplay) {
-    // Set display contrast
-    display.ssd1306_command(SSD1306_SETCONTRAST);
-    display.ssd1306_command(SCREEN_CONTRAST);
-    // Show initial display buffer contents on the screen --
-    // the library initializes this with an Adafruit splash screen.
-    display.display();
-    delay(500);
-  
-    // Clear the buffer
-    display.clearDisplay();
+  if (!withDisplay) {
+    for(;;); // Don't proceed, loop forever
   }
+
+  // Screen
+  // Set display contrast
+  display.ssd1306_command(SSD1306_SETCONTRAST);
+  display.ssd1306_command(SCREEN_CONTRAST);
+  display.setRotation(displayRotation);
+  // Show initial display buffer contents on the screen --
+  // the library initializes this with an Adafruit splash screen.
+  display.display();
+  delay(500);
+
+  // Clear the buffer
+  display.clearDisplay();
+
+  display.setTextSize(1); // Normal 1:1 pixel scale
+  display.setTextColor(DEFAULT_COLOR); // Draw white text
+  display.setCursor(0,0); // Start at top-left corner
+
+  display.println(F("SSD1306... OK"));
+  display.display();
   
   
   // BME280
@@ -37,6 +47,7 @@ void setup() {
     display.println(F("ERROR"));
     // Serial.println(F("ERROR"));
   }
+  display.display();
 
   
   // TODO: What is it?
@@ -49,8 +60,10 @@ void setup() {
 
   int16_t i;
   for (i = 0; i < graphLength; i++) {
-    tempGraph[i] = 0;
+    tempGraph[i] = TEMP_MIN;
   }
 
-  Serial.print(F("Start... "));
+  delay(500);
+
+  // Serial.print(F("Start... "));
 }
