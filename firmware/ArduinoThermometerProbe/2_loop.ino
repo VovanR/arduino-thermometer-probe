@@ -59,6 +59,13 @@ void loop() {
       display.write(0x19); // ↓
     }
 
+    // Min/Max
+    // display.setTextSize(1);
+    // // Start at top-left corner
+    // display.setCursor(0, 17);
+    // display.println(max(tempGraph));
+    // display.println(min(tempGraph));
+
     // BME280
     display.setTextSize(1);
     if (abs(dispTemp) > 99) {

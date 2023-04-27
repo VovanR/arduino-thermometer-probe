@@ -23,25 +23,37 @@ void setup() {
   display.setRotation(displayRotation);
   // Show initial display buffer contents on the screen --
   // the library initializes this with an Adafruit splash screen.
+  display.clearDisplay();
+  display.drawBitmap(0, 0, epd_bitmap_allArray[0], 38, 28, DEFAULT_COLOR);
   display.display();
   delay(500);
 
   // Clear the buffer
-  display.clearDisplay();
+  // display.clearDisplay();
 
   display.setTextSize(1); // Normal 1:1 pixel scale
   display.setTextColor(DEFAULT_COLOR); // Draw white text
-  display.setCursor(0,0); // Start at top-left corner
+  display.setCursor(0, 1); // Start at top-left corner
 
-  display.println(F("SSD1306... OK"));
+  display.println(F("       SSD1306....OK"));
   display.display();
+
+
+  // NTC
+  display.print(F("       NTC....."));
+  int tempSample = therm.getTempAverage();
+  if (tempSample == -71) {
+    display.println(F("ERROR"));
+  } else {
+    display.println(F("...OK"));
+  }
   
   
   // BME280
-  display.print(F("BME280... "));
+  display.print(F("       BME280.."));
   // Serial.print(F("BME280... "));
   if (bme.begin(BME280_ADDRESS, &Wire) || bme.begin(BME280_ADDRESS_ALTERNATE, &Wire)) {
-    display.println(F("OK"));
+    display.println(F("...OK"));
     // Serial.println(F("OK"));
   } else {
     display.println(F("ERROR"));
