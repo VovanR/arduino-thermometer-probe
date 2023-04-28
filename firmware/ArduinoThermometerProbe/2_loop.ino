@@ -1,17 +1,13 @@
 void loop() {
-  if (oneSecTimer.isReady()) {
-    previousTemp = currentTemp;
-    currentTemp = therm.getTempAverage();
+  if (isFirstLoop) {
+    readSensors();
+    addTempToStack(currentTemp);
+  }
 
-    // BME280
-    bme.takeForcedMeasurement();
-    dispTemp = bme.readTemperature();
-    dispHum = bme.readHumidity();
-    dispPres = (float)bme.readPressure() * 0.00750062;
+  if (oneSecTimer.isReady()) {
+    readSensors();
 
     progressIconFilled = !progressIconFilled;
-
-    addTempToStack(currentTemp);
   }
 
   if (fiveSecTimer.isReady()) {
@@ -24,6 +20,8 @@ void loop() {
 
   if (minuteTimer.isReady()) {
     minuteTemp = currentTemp;
+
+    addTempToStack(currentTemp);
   }
 
   if (withDisplay) {
@@ -67,50 +65,39 @@ void loop() {
     // display.println(min(tempGraph));
 
     // BME280
-    display.setTextSize(1);
-    if (abs(dispTemp) > 99) {
-      display.setCursor(37, 25);
-    } else {
-      display.setCursor(43, 25);
-    }
-    if (dispTemp >= 0) {
-      display.print("+");
-    }
-    display.print(dispTemp, 0);
-    display.print("C");
+    if (withBme) {
+      display.setTextSize(1);
+      if (abs(dispTemp) > 99) {
+        display.setCursor(37, 25);
+      } else {
+        display.setCursor(43, 25);
+      }
+      if (dispTemp >= 0) {
+        display.print("+");
+      }
+      display.print(dispTemp, 0);
+      display.print("C");
 
-    if (dispHum >= 100) {
-      display.setCursor(70, 25);
-    } else if (dispHum >= 10) {
-      display.setCursor(76, 25);
-    } else {
-      display.setCursor(82, 25);
+      if (dispHum >= 100) {
+        display.setCursor(70, 25);
+      } else if (dispHum >= 10) {
+        display.setCursor(76, 25);
+      } else {
+        display.setCursor(82, 25);
+      }
+      display.print(dispHum);
+      display.print("%");
+
+      if (dispPres >= 100) {
+        display.setCursor(98, 25);
+      } else if (dispPres >= 10) {
+        display.setCursor(104, 25);
+      } else {
+        display.setCursor(110, 25);
+      }
+      display.print(dispPres);
+      display.print("mm");
     }
-    display.print(dispHum);
-    display.print("%");
-
-    if (dispPres >= 100) {
-      display.setCursor(98, 25);
-    } else if (dispPres >= 10) {
-      display.setCursor(104, 25);
-    } else {
-      display.setCursor(110, 25);
-    }
-    display.print(dispPres);
-    display.print("mm");
-
-
-    // display.setTextSize(1);
-    // display.setCursor(58, 16);
-    // display.println(" 1  5 10 60");
-    // display.setCursor(58, 24);
-    // display.print(previousTemp);
-    // display.write(" ");
-    // display.print(fiveSecTemp);
-    // display.write(" ");
-    // display.print(tenSecTemp);
-    // display.write(" ");
-    // display.print(minuteTemp);
 
     if (progressIconFilled) {
       display.fillCircle(120, 1, 1, DEFAULT_COLOR);
@@ -123,4 +110,5 @@ void loop() {
 
   // delay in between reads for stability
   delay(100);
+  isFirstLoop = false;
 }

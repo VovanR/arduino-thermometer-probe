@@ -13,6 +13,7 @@ int minuteTemp = currentTemp;
 
 
 // BME280
+boolean withBme = false;
 float dispTemp;
 byte dispHum;
 int dispPres;
@@ -42,3 +43,5 @@ const int epd_bitmap_allArray_LEN = 1;
 const unsigned char* epd_bitmap_allArray[1] = {
 	epd_bitmap_Thermometer_Logo
 };
+
+boolean isFirstLoop = true;

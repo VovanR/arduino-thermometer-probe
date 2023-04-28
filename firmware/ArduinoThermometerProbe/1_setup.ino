@@ -35,27 +35,35 @@ void setup() {
   display.setTextColor(DEFAULT_COLOR); // Draw white text
   display.setCursor(0, 1); // Start at top-left corner
 
-  display.println(F("       SSD1306....OK"));
+  display.print(F("       SSD1306"));
+  writeDot(4);
+  display.println(F("OK"));
   display.display();
 
 
   // NTC
-  display.print(F("       NTC....."));
+  display.print(F("       NTC"));
+  writeDot(5);
   int tempSample = therm.getTempAverage();
   if (tempSample == -71) {
     display.println(F("ERROR"));
   } else {
-    display.println(F("...OK"));
+    writeDot(3);
+    display.println(F("OK"));
   }
   
   
   // BME280
-  display.print(F("       BME280.."));
+  display.print(F("       BME280"));
+  writeDot(2);
   // Serial.print(F("BME280... "));
   if (bme.begin(BME280_ADDRESS, &Wire) || bme.begin(BME280_ADDRESS_ALTERNATE, &Wire)) {
-    display.println(F("...OK"));
+    withBme = true;
+    writeDot(3);
+    display.println(F("OK"));
     // Serial.println(F("OK"));
   } else {
+    withBme = false;
     display.println(F("ERROR"));
     // Serial.println(F("ERROR"));
   }
@@ -63,11 +71,13 @@ void setup() {
 
   
   // TODO: What is it?
-  bme.setSampling(Adafruit_BME280::MODE_FORCED,
-                  Adafruit_BME280::SAMPLING_X1, // temperature
-                  Adafruit_BME280::SAMPLING_X1, // pressure
-                  Adafruit_BME280::SAMPLING_X1, // humidity
-                  Adafruit_BME280::FILTER_OFF);
+  if (withBme) {
+    bme.setSampling(Adafruit_BME280::MODE_FORCED,
+                    Adafruit_BME280::SAMPLING_X1, // temperature
+                    Adafruit_BME280::SAMPLING_X1, // pressure
+                    Adafruit_BME280::SAMPLING_X1, // humidity
+                    Adafruit_BME280::FILTER_OFF);
+  }
   
 
   int16_t i;
