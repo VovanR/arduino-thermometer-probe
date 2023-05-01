@@ -25,3 +25,8 @@
 Inspired by:
 - https://github.com/AlexGyver/Thermocontrol
 - https://alexgyver.ru/thermocontrol/
+
+Additional info:
+- [Display libruary](https://learn.adafruit.com/adafruit-gfx-graphics-library/graphics-primitives)
+- [Work with buttons](https://alexgyver.ru/lessons/arduino-buttons/)
+- [Arduino Language Reference](https://www.arduino.cc/reference/)
