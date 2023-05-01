@@ -4,24 +4,32 @@ timerMinim fiveSecTimer(5000);
 timerMinim tenSecTimer(10000);
 timerMinim minuteTimer(60000);
 
-boolean up = true;
+bool up = true;
 int currentTemp = 0;
 int previousTemp = currentTemp;
-int fiveSecTemp = currentTemp;
-int tenSecTemp = currentTemp;
-int minuteTemp = currentTemp;
+int maxTemp = -500;
+int minTemp = 500;
 
 
 // BME280
-boolean withBme = false;
+bool withBme = false;
 float dispTemp;
 byte dispHum;
 int dispPres;
 
-boolean progressIconFilled = false;
+bool progressIconFilled = false;
 
-int graphLength = 84;
-int tempGraph[84];
+int chartLength = 84;
+int tempChart[84];
+int fiveSecTempChart[84];
+int tenSecTempChart[84];
+int minuteTempChart[84];
+
+// 0 - one sec
+// 1 - five sec
+// 2 - ten sec
+// 3 - minute
+int chartState = 0;
 
 
 // 'VovanR Logo', 38x28px
@@ -44,4 +52,9 @@ const unsigned char* epd_bitmap_allArray[1] = {
 	epd_bitmap_Thermometer_Logo
 };
 
-boolean isFirstLoop = true;
+bool isFirstLoop = true;
+
+
+// Button
+#include "button.h"
+button btn1(BUTTON_PIN);

@@ -70,8 +70,8 @@ void setup() {
   display.display();
 
   
-  // TODO: What is it?
   if (withBme) {
+    // TODO: What is it?
     bme.setSampling(Adafruit_BME280::MODE_FORCED,
                     Adafruit_BME280::SAMPLING_X1, // temperature
                     Adafruit_BME280::SAMPLING_X1, // pressure
@@ -79,11 +79,6 @@ void setup() {
                     Adafruit_BME280::FILTER_OFF);
   }
   
-
-  int16_t i;
-  for (i = 0; i < graphLength; i++) {
-    tempGraph[i] = TEMP_MIN;
-  }
 
   delay(500);
 

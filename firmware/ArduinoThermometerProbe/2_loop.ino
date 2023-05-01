@@ -1,28 +1,32 @@
 void loop() {
+  // Fill first gramph value immediate
   if (isFirstLoop) {
     readSensors();
-    addTempToStack(currentTemp);
+    initializeChart(currentTemp, tempChart);
+    initializeChart(currentTemp, fiveSecTempChart);
+    initializeChart(currentTemp, tenSecTempChart);
+    initializeChart(currentTemp, minuteTempChart);
   }
 
   if (oneSecTimer.isReady()) {
     readSensors();
+    addTempToStack(currentTemp, tempChart);
 
     progressIconFilled = !progressIconFilled;
   }
 
   if (fiveSecTimer.isReady()) {
-    fiveSecTemp = currentTemp;
+    addTempToStack(currentTemp, fiveSecTempChart);
   }
 
   if (tenSecTimer.isReady()) {
-    tenSecTemp = currentTemp;
+    addTempToStack(currentTemp, tenSecTempChart);
   }
 
   if (minuteTimer.isReady()) {
-    minuteTemp = currentTemp;
-
-    addTempToStack(currentTemp);
+    addTempToStack(currentTemp, minuteTempChart);
   }
+
 
   if (withDisplay) {
     display.clearDisplay();
@@ -56,13 +60,6 @@ void loop() {
       up = false;
       display.write(0x19); // ↓
     }
-
-    // Min/Max
-    // display.setTextSize(1);
-    // // Start at top-left corner
-    // display.setCursor(0, 17);
-    // display.println(max(tempGraph));
-    // display.println(min(tempGraph));
 
     // BME280
     if (withBme) {
@@ -103,9 +100,44 @@ void loop() {
       display.fillCircle(120, 1, 1, DEFAULT_COLOR);
     }
 
-    drawTempChart();
+    switch (chartState) {
+      case 0:
+        drawChartState("1.5m");
+        drawTempChart(tempChart);
+        calculateStatTemp(tempChart);
+        break;
+      case 1:
+        drawChartState("7m");
+        drawTempChart(fiveSecTempChart);
+        calculateStatTemp(fiveSecTempChart);
+        break;
+      case 2:
+        drawChartState("14m");
+        drawTempChart(tenSecTempChart);
+        calculateStatTemp(tenSecTempChart);
+        break;
+      case 3:
+      default:
+        drawChartState("1.5h");
+        drawTempChart(minuteTempChart);
+        calculateStatTemp(minuteTempChart);
+        break;
+    }
+
+    display.setTextSize(1);
+    display.setCursor(0, 16);
+    drawStatTemp(maxTemp);
+    drawStatTemp(minTemp);
 
     display.display();
+  }
+
+  // Button
+  if (btn1.click()) {
+    chartState++;
+    if (chartState > 3) {
+      chartState = 0;
+    }
   }
 
   // delay in between reads for stability
