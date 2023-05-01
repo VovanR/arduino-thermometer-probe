@@ -5,6 +5,17 @@
 ## Display
 ![](./docs/display.png)
 
+## Components
+- Arduino Nano
+- OLED display 128x32 px (0.91") SSD1306 I2C
+- NTC Thermistor 10K ohm
+- BME280 5V I2C
+- Push button
+- 2 Resistors 10K ohm
+- Switcher
+- USB connector
+- Battery holder (for 4 AA batteries)
+
 ## Scheme
 <img src="./scheme/thermometer-scheme.png" width="50%" />
 
